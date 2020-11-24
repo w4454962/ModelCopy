@@ -111,7 +111,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <OutputFile>D:\war3\ModelHelper.asi</OutputFile>
+      <OutputFile>D:\war3\ModelCopy.asi</OutputFile>
       <AdditionalDependencies>stormlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>LIBCMT</IgnoreSpecificDefaultLibraries>
     </Link>
