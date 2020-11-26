@@ -185,7 +185,7 @@ int storm_mpq::ExportFile(const fs::path& path, const fs::path& outpath, std::ve
 	if (find_texture) //如果是模型 要在里面搜索贴图路径
 	{
 		std::string str = std::string(buffer, size);
-		std::regex reg("([\\w _~!@#$%^&(){\\}[\\]';,\\\\]+\\.[bBtT][lLgG][pPaA])");
+		std::regex reg("([\\w _~!@#$%^&()\\{\\}\\[\\]';,\\+\\-\\\\]+\\.[bBtT][lLgG][pPaA])");
 	
 		auto words_begin = std::sregex_iterator(str.begin(), str.end(), reg);
 		auto words_end = std::sregex_iterator();
