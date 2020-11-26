@@ -189,7 +189,6 @@ int storm_mpq::ExportFile(const fs::path& path, const fs::path& outpath, std::ve
 	
 		auto words_begin = std::sregex_iterator(str.begin(), str.end(), reg);
 		auto words_end = std::sregex_iterator();
-		//正则表达式匹配 全局jass中 符合初始化触发器名字的函数
 		for (; words_begin != words_end; ++words_begin)
 		{
 			find_texture->push_back(words_begin->str(1));
