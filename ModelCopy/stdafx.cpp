@@ -108,7 +108,7 @@ bool CopyFilesToClip(std::vector<std::string>& fileList)
 		GlobalFree(Gmem);
 		return false;
 	}
-
+	
 	bool retValue = true;
 
 	EmptyClipboard();

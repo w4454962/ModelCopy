@@ -1,7 +1,7 @@
 #include "Helper.h"
 #include "fp_call.h"
 #include "storm_mpq.h"
-
+#include <map>
 Helper* getHelper()
 {
 	static Helper instance;
@@ -67,8 +67,25 @@ fs::path Helper::getUnitModelPath(const char* unitId)
 	
 	result = buffer;
 	return result;
+}
+
+fs::path Helper::getDoodasModelPath(const char* doodaId)
+{
+	std::string result;
+
+	auto worldData = getEditorData();
+
+	if (!worldData || !worldData->doodas)
+		return result;
+
+	char buffer[0x104];
+	ZeroMemory(buffer, sizeof(buffer));
 
 
+	this_call<bool>(getAddress(0x005029A0), *(uintptr_t*)(((uint32_t)worldData->doodas) + 0x140), *(uint32_t*)doodaId, buffer, 0x104, 0);
+
+	result = buffer;
+	return result;
 }
 
 const char* Helper::getCurrentMapPath()
@@ -106,6 +123,7 @@ void Helper::copyUpdate()
 
 	fs::create_directories(root);
 
+	std::map<fs::path, bool> file_map;
 
 	auto units = worldData->units;
 	for (size_t i = 0; i < units->unit_count; i++)
@@ -133,22 +151,68 @@ void Helper::copyUpdate()
 
 			std::vector<fs::path> list;
 
-			if (mpq.ExportFile(path, temp, &list))
+			if (file_map.find(path) == file_map.end() && mpq.ExportFile(path, temp, &list))
 			{
+				file_map[path] = true;
 				printf("复制模型 %s %s %s\n", id.c_str(), name.c_str(), path.string().c_str());
 
 				//解析贴图
 				for (auto& texture_path : list)
 				{
 					fs::path texture_temp = root / texture_path;
-					if (mpq.ExportFile(texture_path, texture_temp))
+					if (file_map.find(texture_path) == file_map.end() && mpq.ExportFile(texture_path, texture_temp))
 					{
+						file_map[texture_path] = true;
 						printf("复制贴图 %s \n", texture_path.string().c_str());
 						count++;
 					}
 				}
+
+
+				count++;
 			}
-			count++;
+		}
+	}
+	auto doodas = worldData->doodas;
+	for (size_t i = 0; i < doodas->unit_count; i++)
+	{
+		Unit* unit = &doodas->array[i];
+
+		//如果被选中
+		if (this_call<bool>(*(uintptr_t*)((*(uintptr_t*)doodas) + 0x24), doodas, i))
+		{
+			std::string id = std::string(unit->name, 0x4);
+
+			fs::path path = getDoodasModelPath(unit->name);
+			if (path.extension().string() == ".mdl")
+			{
+				std::string str = path.string();
+				str[str.length() - 1] = 'x';
+				path = str;
+			}
+
+			fs::path temp = root / path.filename();
+
+			std::vector<fs::path> list;
+
+			if (file_map.find(path) == file_map.end() && mpq.ExportFile(path, temp, &list))
+			{
+				file_map[path] = true;
+				printf("复制装饰物模型 %s  %s\n", id.c_str(), path.string().c_str());
+
+				//解析贴图
+				for (auto& texture_path : list)
+				{
+					fs::path texture_temp = root / texture_path;
+					if (file_map.find(texture_path) == file_map.end() && mpq.ExportFile(texture_path, texture_temp))
+					{
+						file_map[texture_path] = true;
+						printf("复制贴图 %s \n", texture_path.string().c_str());
+						count++;
+					}
+				}
+				count++;;
+			}
 		}
 	}
 
@@ -183,8 +247,8 @@ void Helper::attach()
 
 	enableConsole();
 
-	printf("阿7哥哥的模型复制工具， 有空记得加群692125060\n");
-	printf("按 Shift + C 键可以多选复制地形上单位模型\n");
+	printf("7哥的模型复制工具2.0， 有空记得加群692125060\n");
+	printf("按 Shift + C 键可以多选复制地形上 单位&装饰物 的模型\n");
 	printf("在外面按 Ctrl + V 键黏贴出模型贴图文件了。 \n");
 	printf("按 Shift + H 键 隐藏控制台\n");
 	printf("按 Shift + S 键 显示控制台\n");
@@ -270,6 +334,6 @@ void Helper::enableConsole()
 	{
 		::DeleteMenu(::GetSystemMenu(v_hwnd_console, FALSE), SC_CLOSE, MF_BYCOMMAND);
 		::DrawMenuBar(v_hwnd_console);
-		::SetWindowTextA(v_hwnd_console, "阿7哥哥的模型复制工具， 有空记得加群692125060");
+		::SetWindowTextA(v_hwnd_console, "7哥的模型复制工具2.0， 有空记得加群692125060");
 	}
 }

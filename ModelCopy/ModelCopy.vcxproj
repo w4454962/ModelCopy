@@ -105,6 +105,7 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>$(solutiondir)\ModelCopy\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -147,13 +148,17 @@
   <ItemGroup>
     <ClCompile Include="Helper.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="MDX.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="storm_mpq.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BinaryReader.h" />
+    <ClInclude Include="BinaryWriter.h" />
     <ClInclude Include="EditorData.h" />
     <ClInclude Include="fp_call.h" />
     <ClInclude Include="Helper.h" />
+    <ClInclude Include="MDX.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="storm_mpq.h" />
   </ItemGroup>

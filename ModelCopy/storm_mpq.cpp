@@ -2,6 +2,8 @@
 #include "storm_mpq.h"
 #include <string>
 #include <regex>
+#include <MDX.h>
+#include <vector>
  
 
 storm_mpq::storm_mpq()
@@ -184,14 +186,15 @@ int storm_mpq::ExportFile(const fs::path& path, const fs::path& outpath, std::ve
 
 	if (find_texture) //如果是模型 要在里面搜索贴图路径
 	{
-		std::string str = std::string(buffer, size);
-		std::regex reg("([\\w _~!@#$%^&()\\{\\}\\[\\]';,\\+\\-\\\\]+\\.[bBtT][lLgG][pPaA])");
-	
-		auto words_begin = std::sregex_iterator(str.begin(), str.end(), reg);
-		auto words_end = std::sregex_iterator();
-		for (; words_begin != words_end; ++words_begin)
+		std::vector<uint8_t> data;
+		data.resize(size);
+		memcpy(&data[0], buffer, size);
+		BinaryReader render(data);
+		mdx::MDX model(render);
+		
+		for (auto& texture : model.textures)
 		{
-			find_texture->push_back(words_begin->str(1));
+			find_texture->push_back(texture.file_name);
 		}
 	}
 
