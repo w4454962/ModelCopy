@@ -150,6 +150,7 @@
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="MDX.cpp" />
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="storm.cpp" />
     <ClCompile Include="storm_mpq.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -160,6 +161,7 @@
     <ClInclude Include="Helper.h" />
     <ClInclude Include="MDX.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="storm.h" />
     <ClInclude Include="storm_mpq.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

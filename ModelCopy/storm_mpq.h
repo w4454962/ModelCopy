@@ -24,5 +24,5 @@ public:
 	int AddFile(const char* szFilePath);
 	int AddFile(const char* szFilePath, const char* szArchivePath);
 	int RemoveFile(const char* szFileName);
-	int ExportFile(const fs::path& path, const fs::path& outpath, std::vector<fs::path>* find_texture = nullptr);
+	int ExportFile(const fs::path& path, const fs::path& outpath, std::vector<fs::path>* find_texture = nullptr, int mpq_type = 0);
 };

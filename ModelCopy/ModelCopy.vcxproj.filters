@@ -30,6 +30,9 @@
     <ClCompile Include="MDX.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="storm.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Helper.h">
@@ -54,6 +57,9 @@
       <Filter>源文件</Filter>
     </ClInclude>
     <ClInclude Include="BinaryWriter.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="storm.h">
       <Filter>源文件</Filter>
     </ClInclude>
   </ItemGroup>

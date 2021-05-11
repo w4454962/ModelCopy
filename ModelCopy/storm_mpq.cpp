@@ -5,6 +5,9 @@
 #include <MDX.h>
 #include <vector>
  
+#include "storm.h"
+
+base::storm_dll storm;
 
 storm_mpq::storm_mpq()
 {
@@ -166,13 +169,22 @@ int storm_mpq::RemoveFile(const char* szFileName)
 
 
 
-int storm_mpq::ExportFile(const fs::path& path, const fs::path& outpath, std::vector<fs::path>* find_texture)
+int storm_mpq::ExportFile(const fs::path& path, const fs::path& outpath, std::vector<fs::path>* find_texture, int mpq_type)
 {
 	const char* buffer = nullptr;
 	size_t size = 0;
 
-	if (!LoadFile(path.string().c_str(), &buffer, (DWORD*)&size))
-		return 0;
+	if (mpq_type)
+	{
+		if (!storm.load_file(path.string().c_str(), (const void**)&buffer, &size))
+			return 0;
+	}
+	else
+	{
+		if (!LoadFile(path.string().c_str(), &buffer, (DWORD*)&size))
+			return 0;
+	}
+	
 
 	fs::create_directories(outpath.parent_path());
 
@@ -198,7 +210,10 @@ int storm_mpq::ExportFile(const fs::path& path, const fs::path& outpath, std::ve
 		}
 	}
 
-	UnLoadFile(buffer);
+	if (mpq_type)
+		storm.unload_file((const void*)buffer);
+	else 
+		UnLoadFile(buffer);
 
 	return 1;
 }

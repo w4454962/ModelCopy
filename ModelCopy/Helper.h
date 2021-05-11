@@ -31,7 +31,7 @@ private:
 
 	WNDPROC m_oldWinProc;
 
-	void copyUpdate();
+	void copyUpdate(int mpq_type = 0);
 
 	static LRESULT CALLBACK windowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 

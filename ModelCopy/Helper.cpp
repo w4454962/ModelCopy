@@ -101,7 +101,7 @@ const char* Helper::getCurrentMapPath()
 
 
 
-void Helper::copyUpdate()
+void Helper::copyUpdate(int mpq_type)
 {
 	auto worldData = getEditorData();
 
@@ -110,9 +110,11 @@ void Helper::copyUpdate()
 
 	storm_mpq mpq;
 
-	if (!mpq.Open(getCurrentMapPath()))
-		return;
-
+	if (mpq_type == 0)
+	{
+		if (!mpq.Open(getCurrentMapPath()))
+			return;
+	}
 
 	int count = 0;
 	//遍历单位
@@ -151,7 +153,7 @@ void Helper::copyUpdate()
 
 			std::vector<fs::path> list;
 
-			if (file_map.find(path) == file_map.end() && mpq.ExportFile(path, temp, &list))
+			if (file_map.find(path) == file_map.end() && mpq.ExportFile(path, temp, &list, mpq_type))
 			{
 				file_map[path] = true;
 				printf("复制模型 %s %s %s\n", id.c_str(), name.c_str(), path.string().c_str());
@@ -160,7 +162,7 @@ void Helper::copyUpdate()
 				for (auto& texture_path : list)
 				{
 					fs::path texture_temp = root / texture_path;
-					if (file_map.find(texture_path) == file_map.end() && mpq.ExportFile(texture_path, texture_temp))
+					if (file_map.find(texture_path) == file_map.end() && mpq.ExportFile(texture_path, texture_temp, nullptr, mpq_type))
 					{
 						file_map[texture_path] = true;
 						printf("复制贴图 %s \n", texture_path.string().c_str());
@@ -195,7 +197,7 @@ void Helper::copyUpdate()
 
 			std::vector<fs::path> list;
 
-			if (file_map.find(path) == file_map.end() && mpq.ExportFile(path, temp, &list))
+			if (file_map.find(path) == file_map.end() && mpq.ExportFile(path, temp, &list, mpq_type))
 			{
 				file_map[path] = true;
 				printf("复制装饰物模型 %s  %s\n", id.c_str(), path.string().c_str());
@@ -204,7 +206,7 @@ void Helper::copyUpdate()
 				for (auto& texture_path : list)
 				{
 					fs::path texture_temp = root / texture_path;
-					if (file_map.find(texture_path) == file_map.end() && mpq.ExportFile(texture_path, texture_temp))
+					if (file_map.find(texture_path) == file_map.end() && mpq.ExportFile(texture_path, texture_temp, nullptr, mpq_type))
 					{
 						file_map[texture_path] = true;
 						printf("复制贴图 %s \n", texture_path.string().c_str());
@@ -218,8 +220,11 @@ void Helper::copyUpdate()
 
 	printf("文件数量 %i \n", count);
 
+	if (mpq_type == 0)
+	{
+		mpq.Close();
+	}
 
-	mpq.Close();
 
 	std::vector<std::string> filelist;
 	for (auto& iter : fs::directory_iterator(root))
@@ -247,8 +252,9 @@ void Helper::attach()
 
 	enableConsole();
 
-	printf("7哥的模型复制工具2.0， 有空记得加群692125060\n");
-	printf("按 Shift + C 键可以多选复制地形上 单位&装饰物 的模型\n");
+	printf("7哥的模型复制工具2.1， 有空记得加群692125060\n");
+	printf("按 Shift + C 键可以多选复制地形上 自定义导入的 单位&装饰物 的模型\n");
+	printf("按 Alt + C 键可以多选复制地形上 包括魔兽原生的 单位&装饰物 的模型\n");
 	printf("在外面按 Ctrl + V 键黏贴出模型贴图文件了。 \n");
 	printf("按 Shift + H 键 隐藏控制台\n");
 	printf("按 Shift + S 键 显示控制台\n");
@@ -277,8 +283,15 @@ LRESULT CALLBACK Helper::windowProc(HWND hWnd, UINT message, WPARAM wParam, LPAR
 		// shift + c 键
 		if ((GetKeyState(0x10) & 0x8000) && GetKeyState('C'))
 		{
-			getHelper()->copyUpdate();
+			getHelper()->copyUpdate(0);
 		}
+
+		//alt +c
+		if ((GetKeyState(0x12) & 0x8000) && GetKeyState('C'))
+		{
+			getHelper()->copyUpdate(1);
+		}
+
 		// shift + s 键
 		if ((GetKeyState(0x10) & 0x8000) && GetKeyState('S'))
 		{
@@ -334,6 +347,6 @@ void Helper::enableConsole()
 	{
 		::DeleteMenu(::GetSystemMenu(v_hwnd_console, FALSE), SC_CLOSE, MF_BYCOMMAND);
 		::DrawMenuBar(v_hwnd_console);
-		::SetWindowTextA(v_hwnd_console, "7哥的模型复制工具2.0， 有空记得加群692125060");
+		::SetWindowTextA(v_hwnd_console, "7哥的模型复制工具2.1， 有空记得加群692125060");
 	}
 }
